@@ -51,13 +51,15 @@ class Cart {
   }
   addBook(book) {
     // if the book is not available, it will not be added to the cart
-    if (!book.availability) return 
-    this.acticle.push(book)
+    if (book.availability === 0) return 
+    // add the book to the array in the basket and reduce the availability by 1
+    this.acticle.push(book) && --book.availability
   }
   deleteBook(book) {
     const index = this.acticle.indexOf(book)
     if (index !== -1) {
-      this.acticle.splice(index, 1)
+      // remove the book from the basket and increase the availability by 1
+      this.acticle.splice(index, 1) && ++book.availability
     }
   }
   calcutateTotalPrice() {
@@ -69,7 +71,7 @@ class Cart {
 class Order {
   constructor(user, cart) {
     // if the cart is empty, you cannot create an order
-    if (cart.length === 0) {
+    if (cart.acticle.length === 0) {
       throw new Error('Cart cannot be empty if you want to create an order.');
     }
     this.user = user
@@ -82,9 +84,10 @@ class Order {
 }
 
 // create book objects
-const book1 = new FictionBook('The Great Gatsby', 'F. Scott Fitzgerald', '978-3-16-148410-0', 20.99, true);
-const book2 = new NonFictionBook('How to Code', 'Coder', '978-3-16-148411-0', 15.99, true);
-const book3 = new FictionBook('To Kill a Mockingbird', 'Harper Lee', '978-3-16-148412-0', 18.99, true);
+const book1 = new FictionBook('The Great Gatsby', 'F. Scott Fitzgerald', '978-3-16-148410-0', 20.99, 1);
+const book2 = new NonFictionBook('How to Code', 'Coder', '978-3-16-148411-0', 15.99, 1);
+const book3 = new FictionBook('To Kill a Mockingbird', 'Harper Lee', '978-3-16-148412-0', 18.99, 2);
+console.log(book2);
 
 // create user objects
 const user1 = new User('John Doe', 'john@example.com');
@@ -103,9 +106,17 @@ cart1.addBook(book3)
 cart2.addBook(book3);
 cart2.addBook(book1)
 
+cart1.addBook(book1)
+cart2.addBook(book2)
+
+console.log(cart1);
+console.log(cart2);
+
 // place orders
 const order1 = new Order(user1, cart1);
 const order2 = new Order(user2, cart2);
+console.log(order1);
+console.log(order2);
 
 // interactions
 console.log(`Interaction Example:`);
